@@ -3,6 +3,8 @@
 // mirrored state (passed as props from parent)
 // ════════════════════════════════════════════════
 
+import type { Track } from "@/types/Track";
+
 export default function NowPlayingBar({
     track,
     playing,

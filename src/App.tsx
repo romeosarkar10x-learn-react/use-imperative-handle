@@ -7,14 +7,9 @@ import RemoteControl from "./components/RemoteControl";
 import NowPlayingBar from "./components/NowPlayingBar";
 import { TRACKS } from "./data/tracks";
 
-// ════════════════════════════════════════════════
-// APP — wires everything together
-// ════════════════════════════════════════════════
-
 export default function App() {
     const playerRef = useRef<MusicPlayerHandle>(null);
 
-    // Mirrored state so siblings can re-render from it
     const [nowPlaying, setNowPlaying] = useState<{
         track: Track;
         playing: boolean;
@@ -61,27 +56,6 @@ export default function App() {
                             progress={nowPlaying.progress}
                         />
                     </div>
-                </div>
-
-                {/* Hint box */}
-                <div className="mt-8 bg-indigo-950/40 border border-indigo-800/50 rounded-xl p-5">
-                    <div className="text-indigo-300 font-semibold text-sm mb-2">💡 What to implement</div>
-                    <p className="text-indigo-200/70 text-sm leading-relaxed">
-                        Find the <code className="text-indigo-400">🎯 YOUR CODE HERE</code> comment inside{" "}
-                        <code className="text-indigo-400">MusicPlayer</code>. Add a{" "}
-                        <code className="text-indigo-400">useImperativeHandle</code> call that exposes:{" "}
-                        <code className="text-indigo-400">play()</code>,{" "}
-                        <code className="text-indigo-400">pause()</code>,{" "}
-                        <code className="text-indigo-400">nextTrack()</code>,{" "}
-                        <code className="text-indigo-400">prevTrack()</code>,{" "}
-                        <code className="text-indigo-400">setVolume(v)</code>,{" "}
-                        <code className="text-indigo-400">getCurrentTrack()</code>,{" "}
-                        <code className="text-indigo-400">isPlaying()</code>,{" "}
-                        <code className="text-indigo-400">getVolume()</code>, and{" "}
-                        <code className="text-indigo-400">getProgress()</code>. Remember to call{" "}
-                        <code className="text-indigo-400">onStateChange()</code> in the action methods so siblings get
-                        re-rendered!
-                    </p>
                 </div>
             </div>
         </div>

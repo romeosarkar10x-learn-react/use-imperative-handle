@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import type { Track } from "@/types/Track";
 import type { MusicPlayerHandle } from "@/types/MusicPlayerHandle";
 import { TRACKS } from "@/data/tracks";
@@ -33,7 +33,8 @@ type MusicPlayerProps = {
 // After exposing, also call onStateChange() inside play/pause/nextTrack/prevTrack/setVolume
 // so the parent can mirror state for sibling re-renders.
 // ════════════════════════════════════════════════
-const MusicPlayer = forwardRef<MusicPlayerHandle, MusicPlayerProps>(({ onStateChange }, ref) => {
+//const MusicPlayer = forwardRef<MusicPlayerHandle, MusicPlayerProps>(({ onStateChange }, ref) => {
+export default function MusicPlayer({ ref, onStateChange }: { ref: React.Ref<MusicPlayerHandle> } & MusicPlayerProps) {
     const [trackIndex, setTrackIndex] = useState(0);
     const [playing, setPlaying] = useState(false);
     const [volume, setVolume] = useState(75);
@@ -62,11 +63,64 @@ const MusicPlayer = forwardRef<MusicPlayerHandle, MusicPlayerProps>(({ onStateCh
             });
         }, 100);
         return () => clearInterval(interval);
-    }, [playing, track, volume]);
+    }, [playing, track, volume, onStateChange]);
 
     // ──────────────────────────────────────────
     // 🎯 YOUR CODE HERE
     // Add useImperativeHandle(ref, () => ({ ... }), [deps])
+    useImperativeHandle(ref, () => {
+        return {
+            play: () => {
+                setPlaying(true);
+            },
+            pause: () => {
+                setPlaying(false);
+            },
+            nextTrack: () => {
+                setTrackIndex((index) => {
+                    if (index === TRACKS.length - 1) {
+                        return index;
+                    }
+
+                    return index + 1;
+                });
+            },
+            prevTrack: () => {
+                setTrackIndex((index) => {
+                    if (index === 0) {
+                        return index;
+                    }
+
+                    return index - 1;
+                });
+            },
+            setVolume: (value: number) => {
+                if (value < 0) {
+                    setVolume(0);
+                } else if (value > 100) {
+                    setVolume(100);
+                } else {
+                    setVolume(value);
+                }
+            },
+
+            getCurrentTrack: () => {
+                return track;
+            },
+
+            isPlaying: () => {
+                return playing;
+            },
+
+            getVolume: () => {
+                return volume;
+            },
+
+            getProgress: () => {
+                return progress;
+            },
+        };
+    }, [track, playing, progress, volume, setPlaying, setTrackIndex]);
     // ──────────────────────────────────────────
 
     // Format time
@@ -81,7 +135,7 @@ const MusicPlayer = forwardRef<MusicPlayerHandle, MusicPlayerProps>(({ onStateCh
 
             {/* Track info */}
             <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl shrink-0">
+                <div className="w-14 h-14 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl shrink-0">
                     {playing ? "▶" : "⏸"}
                 </div>
                 <div className="min-w-0">
@@ -114,6 +168,4 @@ const MusicPlayer = forwardRef<MusicPlayerHandle, MusicPlayerProps>(({ onStateCh
             </div>
         </div>
     );
-});
-
-export default MusicPlayer;
+}
